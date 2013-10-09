@@ -103,5 +103,6 @@
     </feature>
     <!-- Deprecated plugins element. Remove in 3.0 -->
     <plugins>
+        <plugin name="GCMPlugin" value="com.plugin.GCM.GCMPlugin" />
     </plugins>
 </widget>
