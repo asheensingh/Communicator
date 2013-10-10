@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.view.Menu;
 import org.apache.cordova.*;
 
+import com.google.android.gcm.GCMRegistrar;
+
 public class MainActivity extends DroidGap {
 
 	@Override
@@ -18,5 +20,4 @@ public class MainActivity extends DroidGap {
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
-
 }

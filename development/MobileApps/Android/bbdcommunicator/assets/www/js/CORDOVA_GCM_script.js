@@ -3,24 +3,29 @@ gApp = new Array();
 gApp.deviceready = false;
 gApp.gcmregid = '';
 
+
+/*
 window.onbeforeunload  =  function(e) {
 
     if ( gApp.gcmregid.length > 0 )
     {
       // The same routines are called for success/fail on the unregister. You can make them unique if you like
-      window.GCM.unregister( GCM_Success, GCM_Fail );      // close the GCM
+      window.plugins.GCM.unregister( GCM_Success, GCM_Fail );      // close the GCM
 
     }
 };
 
-
 document.addEventListener('deviceready', function() {
   // This is the Cordova deviceready event. Once this is called Cordova is available to be used  
-  console.log("deviceready event received");
+  //console.log("deviceready event received");
   
-  console.log("calling GCMRegistrar.register, register our Sender ID with Google");
+  //console.log("calling GCMRegistrar.register, register our Sender ID with Google");
+  
+  //alert("deviceready event received");
+  
+  //alert("calling GCMRegistrar.register, register our Sender ID with Google");
 
-  gApp.DeviceReady = true;
+  //gApp.DeviceReady = true;
 
   // Some Unique stuff here,
   // The first Parm is your Google email address that you were authorized to use GCM with
@@ -30,16 +35,16 @@ document.addEventListener('deviceready', function() {
   // The last two parms are used by Cordova, they are the callback routines if the call is successful or fails
   //
   //
-  window.plugins.GCM.register("778187313745", "GCM_Event", GCM_Success, GCM_Fail );
+ // window.plugins.GCM.register("778187313745", "GCM_Event", GCM_Success, GCM_Fail );
 
 }, false );
-
+*/
 
 function
 GCM_Event(e)
 {
   
-  console.log("Received event\n"+e.event);
+  console.log("Received event\n"+e.event); 
 
   switch( e.event )
   {
@@ -49,18 +54,9 @@ GCM_Event(e)
     gApp.gcmregid = e.regid;
     if ( gApp.gcmregid.length > 0 )
     {       
-		console.log("REGID: "+e.regid);
-
-      // ==============================================================================
-      // ==============================================================================
-      // ==============================================================================
-      //
-      // pass app id and user id for registration on our server
-      //
-      // ==============================================================================
-      // ==============================================================================
-      // ==============================================================================
-	
+		console.log("REGID: "+e.regid);		
+		window.localStorage.setItem("appID", gApp.gcmregid);	
+		alert("REGID: "+e.regid);
     }
 
     break
@@ -79,14 +75,14 @@ GCM_Event(e)
 
 
   case 'error':   
-	console.log("Error\n"+e.msg);
+	console.log("Error\n"+e.msg);	
 
     break;
 
 
 
   default:    
-	console.log("Unknown event");
+	console.log("Unknown event");	
     break;
   }
 }
@@ -94,7 +90,7 @@ GCM_Event(e)
 function
 GCM_Success(e)
 { 
-	console.log("Registered succ");
+	console.log("Registered succ");	
 }
 
 function
