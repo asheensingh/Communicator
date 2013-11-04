@@ -45,7 +45,7 @@ GCM_Event(e)
 {
   
   console.log("Received event\n"+e.event); 
-
+  alert("Received event\n"+e.event);
   switch( e.event )
   {
   case 'registered':
@@ -55,8 +55,8 @@ GCM_Event(e)
     if ( gApp.gcmregid.length > 0 )
     {       
 		console.log("REGID: "+e.regid);		
-		window.localStorage.setItem("appID", gApp.gcmregid);	
-		alert("REGID: "+e.regid);
+		alert("New REGID\n: "+e.regid);
+		window.localStorage.setItem("appID", gApp.gcmregid);			
     }
 
     break
@@ -68,21 +68,26 @@ GCM_Event(e)
     // You will NOT receive any messages unless you build a HOST server application to send
     // Messages to you, This is just here to show you how it might work
 
-	console.log("Received message. MSG: "+e.message);
-	console.log("Received message. MSGCNT: "+e.message);
+	//console.log("Received message. MSG: "+e.message);
+	//console.log("Received message. MSGCNT: "+e.message);
+	alert("message");
+	alert("Received message. MSG: "+e.message);
+	alert("Received message. MSGCNT: "+e.message);
 
     break;
 
 
   case 'error':   
-	console.log("Error\n"+e.msg);	
+	//console.log("Error\n"+e.msg);	
+	alert("Error\n"+e.msg);	
 
     break;
 
 
 
   default:    
-	console.log("Unknown event");	
+	//console.log("Unknown event");	
+	alert("unknown event");
     break;
   }
 }
@@ -90,15 +95,20 @@ GCM_Event(e)
 function
 GCM_Success(e)
 { 
-	console.log("Registered succ");	
+	//console.log("Registered succ");	
+	alert("Registered succ");
 }
 
 function
 GCM_Fail(e)
 {  
-  console.log("Registered failed");
+  //console.log("Registered failed");
   
-  console.log("Registered fail "+e.msg);
+  //console.log("Registered fail "+e.msg);
+  
+  alert("Registered failed");
+  
+  alert("Registered fail "+e.msg);
 
 }
 

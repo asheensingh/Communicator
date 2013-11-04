@@ -14,14 +14,13 @@ public class GCMIntentService extends GCMBaseIntentService {
 
   public static final String ME="GCMReceiver";
 
-  public GCMIntentService() {
-    super("GCMIntentService");
+  public GCMIntentService() {	  
+    super("GCMIntentService");    
   }
   private static final String TAG = "GCMIntentService";
 
   @Override
-  public void onRegistered(Context context, String regId) {
-
+  public void onRegistered(Context context, String regId) {	
     Log.v(ME + ":onRegistered", "Registration ID arrived!");
     Log.v(ME + ":onRegistered", regId);
 
@@ -51,13 +50,19 @@ public class GCMIntentService extends GCMBaseIntentService {
     Log.d(TAG, "onUnregistered - regId: " + regId);
   }
 
+  
+  
+  
+  /**
+   * This is were the problem is
+   */
   @Override
-  protected void onMessage(Context context, Intent intent) {
+  protected void onMessage(Context context, Intent intent) {		  
     Log.d(TAG, "onMessage - context: " + context);
 
     // Extract the payload from the message
-    Bundle extras = intent.getExtras();
-    if (extras != null) {
+    Bundle extras = intent.getExtras();    
+    if (extras != null) {    
       try
       {
         Log.v(ME + ":onMessage extras ", extras.getString("message"));
@@ -70,28 +75,26 @@ public class GCMIntentService extends GCMBaseIntentService {
         // Depending on how you build your server app you can specify what variables you want to send
         //
         json.put("message", extras.getString("message"));
-        json.put("msgcnt", extras.getString("msgcnt"));
+        
+        
+        //I commented this out becuase I don't think we need this
+        //json.put("msgcnt", extras.getString("msgcnt"));
 
         Log.v(ME + ":onMessage ", json.toString());
 
         GCMPlugin.sendJavascript( json );
-        // Send the MESSAGE to the Javascript application
+        // Send the MESSAGE to the Javascript application        
       }
       catch( JSONException e)
       {
         Log.e(ME + ":onMessage", "JSON exception");
       }        	
     }
-
-
   }
 
   @Override
   public void onError(Context context, String errorId) {
     Log.e(TAG, "onError - errorId: " + errorId);
   }
-
-
-
 
 }
