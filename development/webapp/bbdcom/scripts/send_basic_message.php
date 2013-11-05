@@ -123,6 +123,7 @@ $message_type = $_POST['message_type'];
 //add to database
 $json_rsvp = json_encode($rsvp);
 $output1 = addNotification($subject,$image_path,$message,$json_rsvp,"12/12/2014",$department, $message_type);
+//send notification
 var_dump($output1);
 
 

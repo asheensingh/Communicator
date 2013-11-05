@@ -7,7 +7,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
+
 import com.plugin.GCM.GCMPlugin;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 
 
 public class GCMIntentService extends GCMBaseIntentService {
@@ -69,7 +74,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 
         JSONObject json;
         json = new JSONObject().put("event", "message");
-
+        
 
         // My application on my host server sends back to "EXTRAS" variables message and msgcnt
         // Depending on how you build your server app you can specify what variables you want to send
@@ -79,15 +84,26 @@ public class GCMIntentService extends GCMBaseIntentService {
         
         //I commented this out becuase I don't think we need this
         //json.put("msgcnt", extras.getString("msgcnt"));
-
-        Log.v(ME + ":onMessage ", json.toString());
-        try{
-        	GCMPlugin.sendJavascript( json );
-        }
-        catch(Exception e){
-        	Log.v(ME + ":after call ", json.toString());
-        	Log.v("ERROR", e.getMessage());
-        }
+        
+        String message = extras.getString("message");
+        String title = extras.getString("title");
+        Notification notif = new Notification(R.drawable.ic_launcher, message, System.currentTimeMillis() );
+        
+        notif.flags = Notification.FLAG_AUTO_CANCEL;
+        notif.defaults |= Notification.DEFAULT_SOUND;
+        notif.defaults |= Notification.DEFAULT_VIBRATE;
+         
+        Intent notificationIntent = new Intent(context, GCMIntentService.class);
+        notificationIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);       
+        notif.setLatestEventInfo(context, title, message, contentIntent);
+        String ns = Context.NOTIFICATION_SERVICE;
+        NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(ns);
+        mNotificationManager.notify(1, notif);
+                
+        
+        Log.v(ME + ":onMessage ", json.toString());        
+        GCMPlugin.sendJavascript( json );
         // Send the MESSAGE to the Javascript application        
       }
       catch( JSONException e)
