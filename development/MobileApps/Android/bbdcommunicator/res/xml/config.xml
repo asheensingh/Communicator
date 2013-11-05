@@ -27,7 +27,7 @@
     </description>
 
     <author href="http://cordova.io" email="dev@cordova.apache.org">
-       BBD CoachLab Team
+        Apache Cordova Team
     </author>
 
     <access origin="*"/>
@@ -102,7 +102,7 @@
       <param name="android-package" value="org.apache.cordova.InAppBrowser"/>
     </feature>
     <!-- Deprecated plugins element. Remove in 3.0 -->
-    <plugins>
-        <plugin name="GCMPlugin" value="com.plugin.GCM.GCMPlugin" />
-    </plugins>
+    
+    <plugin name="GCMPlugin" value="com.plugin.GCM.GCMPlugin" />
+    
 </widget>

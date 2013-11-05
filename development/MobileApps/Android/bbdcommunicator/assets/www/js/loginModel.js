@@ -1,15 +1,17 @@
-(function(window,$) {		
+(function(window,$) {
 		
 	var loginModel = function LoginModel(){	
-		var browser;
+		var browser;				
 	}
 	
-	loginModel.prototype.startLogin = function(){				
+	loginModel.prototype.startLogin = function(){		
+		var loginObj = this;
 		browser = window.open('https://www.yammer.com/dialog/oauth?client_id=nEjhbfN94g3w2nAYczxEw&redirect_uri=', '_blank', 'location=no');		
 		browser.addEventListener('loadstart', checkURL);
 		browser.addEventListener('loadstop', checkURL);
 		browser.addEventListener('loaderror', checkURL);
-		browser.addEventListener('exit', browserClose);		
+		browser.addEventListener('exit', browserClose);
+		loginObj.browser = browser;
 	};
 	
 		function checkURL(event){		
@@ -39,7 +41,7 @@
 			alert("An error occurred. Please try again. \n"+event.message);
 		}	
 	}	
-		
+	
 	function browserClose(event)
 	{		
 		this.browser.close();

@@ -59,20 +59,10 @@ GCM_Event(e)
 		window.localStorage.setItem("appID", gApp.gcmregid);			
     }
 
-    break
+    break;
 
   case 'message':
-    // the definition of the e variable is json return defined in GCMIntentService.java
-    // In my case on registered I have EVENT, MSG and MSGCNT defined
-
-    // You will NOT receive any messages unless you build a HOST server application to send
-    // Messages to you, This is just here to show you how it might work
-
-	//console.log("Received message. MSG: "+e.message);
-	//console.log("Received message. MSGCNT: "+e.message);
-	alert("message");
-	alert("Received message. MSG: "+e.message);
-	alert("Received message. MSGCNT: "+e.message);
+	alert(e.message);	
 
     break;
 

@@ -3,9 +3,9 @@ $(function(){
 
 	function onDeviceReady() {		
 		var store = new localStoreModel();
-		var isRegistered = store.isRegistered();
-		if(!isRegistered){			
-			store.registerApp();
-		}
+		//var isRegistered = store.isRegistered();
+		//if(!isRegistered){			
+			store.registerApp();			
+		//}
 	}
 });

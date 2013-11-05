@@ -81,8 +81,13 @@ public class GCMIntentService extends GCMBaseIntentService {
         //json.put("msgcnt", extras.getString("msgcnt"));
 
         Log.v(ME + ":onMessage ", json.toString());
-
-        GCMPlugin.sendJavascript( json );
+        try{
+        	GCMPlugin.sendJavascript( json );
+        }
+        catch(Exception e){
+        	Log.v(ME + ":after call ", json.toString());
+        	Log.v("ERROR", e.getMessage());
+        }
         // Send the MESSAGE to the Javascript application        
       }
       catch( JSONException e)

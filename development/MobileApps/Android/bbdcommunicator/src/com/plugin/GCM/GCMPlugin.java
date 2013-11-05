@@ -42,8 +42,7 @@ public class GCMPlugin extends CordovaPlugin {
 
   @Override
   public boolean execute(String action, JSONArray data, CallbackContext callbackContext)
-  {
-
+  {	  
     boolean result = true;
 
     Log.v(ME + ":execute", "action=" + action);
@@ -96,11 +95,12 @@ public class GCMPlugin extends CordovaPlugin {
 
 
   public static void sendJavascript( JSONObject _json )
-  {
-    String _d =  "javascript:"+gECB+"(" + _json.toString() + ")";
+  {	  
+	//String s = "{'message':'hello','event':'message'}";
+    String _d =  "javascript:"+gECB+"(" +_json + ")";
         Log.v(ME + ":sendJavascript", _d);
-
-        if (gECB != null ) {
+        //gwebView.sendJavascript( _d );
+       if (gECB != null ) {
           gwebView.sendJavascript( _d );
         }
   }
