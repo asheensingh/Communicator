@@ -1,10 +1,58 @@
 (function(window,$) {
 		
 	var dbModel = function databaseModel(){	
-		var db = window.openDatabase("Testdb", "1.0", "ddbcom db", 200000);				
+		var db = window.openDatabase("MessageDB", "1.0", "ddbcom db", 200000);	
+		db.transaction(createTable, errorHandler); //don't need a success handler here
+		//db.transaction(select, insertError, insertSuccess); //don't need a success handler here
+		insertMsg('insert msg');
+		var message = null;
 	}
 	
-	dbModel.prototype.insertMessage = function(msg){
+	dbModel.setMessage = function(msg){
+		this.message = msg;
+		alert("this is set message:"+this.message);
+	}
+	
+	function createTable(trans){		
+		trans.executeSql('CREATE TABLE IF NOT EXISTS BIRTHDAY (id unique, data)');
+	}
+	
+	function errorHandler(err){
+		alert("Error processing SQL: "+err.code);
+	}
+	
+	
+	function insertMsg(msg){
+		alert('insertMSG');
+		var db = window.openDatabase("MessageDB", "1.0", "ddbcom db", 200000);	
+		db.transaction(insert, errorHandler, insertSuccess); //don't need a success handler here
+	}	
+	
+	function insert(trans){		
+		alert('insert: ' + this.message);
+		//trans.executeSql('INSERT INTO BIRTHDAY (id, data) VALUES (1, "First row")');
+	}	
+	
+	function insertSuccess(res){		
+		alert('Inserted successfully');		
+	}
+	
+	function readMsg(trans){	
+		trans.executeSql('SELECT * FROM BIRTHDAY WHERE 1',[],displayMsg,errorHandler);
+	}
+
+	
+	function displayMsg(trans, result){
+		alert('select success: '+result.rows.item(0).data);
+	}
+	
+	
+	window.dbModel = dbModel;
+
+})(window,$);
+
+/*
+dbModel.prototype.insertMessage = function(msg){
 		var model = this;
 		db = window.openDatabase("Testdb", "1.0", "ddbcom db", 200000);
 		db.transaction(populateDB, errorCB, successCB);
@@ -58,4 +106,4 @@
 	
 	window.dbModel = dbModel;
 	
-})(window,$);
+	*/

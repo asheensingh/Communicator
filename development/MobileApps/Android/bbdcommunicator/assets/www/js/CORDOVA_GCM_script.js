@@ -63,7 +63,9 @@ GCM_Event(e)
 
   case 'message':
 	alert(e.message);	
-
+	var db = new dbModel();
+	db.setMsg(e.message);
+	//db.insertMsg('hello');
     break;
 
 
