@@ -1,49 +1,61 @@
 (function(window,$) {
 		
+	var message;	
+	
 	var dbModel = function databaseModel(){	
 		var db = window.openDatabase("MessageDB", "1.0", "ddbcom db", 200000);	
 		db.transaction(createTable, errorHandler); //don't need a success handler here
-		//db.transaction(select, insertError, insertSuccess); //don't need a success handler here
-		insertMsg('insert msg');
-		var message = null;
+		//db.transaction(select, insertError, insertSuccess); //don't need a success handler here				
 	}
 	
-	dbModel.setMessage = function(msg){
-		this.message = msg;
-		alert("this is set message:"+this.message);
+	dbModel.prototype.saveMessage = function(msg){				
+		insertMessage(msg);
+	}
+	
+	dbModel.prototype.getBirthdayMsg(){
+		
 	}
 	
 	function createTable(trans){		
-		trans.executeSql('CREATE TABLE IF NOT EXISTS BIRTHDAY (id unique, data)');
+		trans.executeSql('CREATE TABLE IF NOT EXISTS BIRTHDAY (id INTEGER PRIMARY KEY AUTOINCREMENT, data TEXT)');
 	}
 	
 	function errorHandler(err){
-		alert("Error processing SQL: "+err.code);
+		alert("Error processing SQL: "+err.message);
 	}
 	
 	
-	function insertMsg(msg){
-		alert('insertMSG');
+	function insertMessage(msg){
+		message = msg;
+		//alert(this.message);
 		var db = window.openDatabase("MessageDB", "1.0", "ddbcom db", 200000);	
-		db.transaction(insert, errorHandler, insertSuccess); //don't need a success handler here
+		db.transaction(insert, errorHandler, insertSuccess);
 	}	
 	
-	function insert(trans){		
-		alert('insert: ' + this.message);
-		//trans.executeSql('INSERT INTO BIRTHDAY (id, data) VALUES (1, "First row")');
+	function insert(trans){				
+		var query = 'INSERT INTO BIRTHDAY (data) VALUES ("'+message+'")';
+		trans.executeSql(query);
 	}	
 	
-	function insertSuccess(res){		
-		alert('Inserted successfully');		
+	function insertSuccess(res){				
+		var db = window.openDatabase("MessageDB", "1.0", "ddbcom db", 200000);	
+		db.transaction(readMsg, errorHandler, displayMsg);
 	}
 	
 	function readMsg(trans){	
-		trans.executeSql('SELECT * FROM BIRTHDAY WHERE 1',[],displayMsg,errorHandler);
+		trans.executeSql('SELECT * FROM BIRTHDAY',[],displayMsg,errorHandler);
 	}
 
 	
 	function displayMsg(trans, result){
-		alert('select success: '+result.rows.item(0).data);
+		var size = result.rows.length;		
+		var out = "Messages:\n";
+		for(var i=0;i<size;i++){
+			out += result.rows.item(i).data;
+			out+="\n";
+			//alert(result.rows.item(i).data );
+		}
+		alert(out);			
 	}
 	
 	
