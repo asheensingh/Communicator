@@ -78,16 +78,19 @@ public class GCMIntentService extends GCMBaseIntentService {
 
         // My application on my host server sends back to "EXTRAS" variables message and msgcnt
         // Depending on how you build your server app you can specify what variables you want to send
-        //
+
         json.put("message", extras.getString("message"));
-        
-        
+        json.put("subject", extras.getString("subject"));
+        json.put("image", extras.getString("image"));
+        json.put("rsvp", extras.getString("rsvp_type"));
+        json.put("type", extras.getString("notification_type"));
+                
         //I commented this out becuase I don't think we need this
         //json.put("msgcnt", extras.getString("msgcnt"));
         
         String message = extras.getString("message");
-        String title = extras.getString("title");
-        Notification notif = new Notification(R.drawable.ic_launcher, message, System.currentTimeMillis() );
+        String subject = extras.getString("subject");
+        Notification notif = new Notification(R.drawable.ic_launcher, message, System.currentTimeMillis());
         
         notif.flags = Notification.FLAG_AUTO_CANCEL;
         notif.defaults |= Notification.DEFAULT_SOUND;
@@ -96,11 +99,10 @@ public class GCMIntentService extends GCMBaseIntentService {
         Intent notificationIntent = new Intent(context, GCMIntentService.class);
         notificationIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);       
-        notif.setLatestEventInfo(context, title, message, contentIntent);
+        notif.setLatestEventInfo(context, subject, message, contentIntent);
         String ns = Context.NOTIFICATION_SERVICE;
         NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(ns);
-        mNotificationManager.notify(1, notif);
-                
+        mNotificationManager.notify(1, notif);                
         
         Log.v(ME + ":onMessage ", json.toString());        
         GCMPlugin.sendJavascript( json );

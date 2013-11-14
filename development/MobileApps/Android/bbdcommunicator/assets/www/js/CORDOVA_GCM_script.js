@@ -62,8 +62,8 @@ GCM_Event(e)
     break;
 
   case 'message':	
-	var db = new dbModel();
-	//db.saveMessage(e.message);	
+	var db = new dbModel();	
+	db.saveMessage(e.subject,e.message, e.image, e.rsvp, e.type);		
     break;
 
 

@@ -1,121 +1,89 @@
 (function(window,$) {
-		
-	var message;	
+
+	var msgModel = new messageObject(null,null,null, null, null, null, null);
+	var message_type= "";
+	var output_table = "";		
+	var callback = null;
 	
-	var dbModel = function databaseModel(){	
+	var dbModel = function databaseModel(){					
 		var db = window.openDatabase("MessageDB", "1.0", "ddbcom db", 200000);	
-		db.transaction(createTable, errorHandler); //don't need a success handler here
-		//db.transaction(select, insertError, insertSuccess); //don't need a success handler here				
+		db.transaction(createTable, errorHandler);
 	}
 	
-	dbModel.prototype.saveMessage = function(msg){				
-		insertMessage(msg);
+	dbModel.prototype.saveMessage = function(sub, msg, image, rsvp, type){				
+		msgModel.setSubject(sub);		
+		msgModel.setMessage(msg);
+		msgModel.setImage(image);
+		msgModel.setRSVP(rsvp);
+		msgModel.setType(type);		
+		var db = window.openDatabase("MessageDB", "1.0", "ddbcom db", 200000);	
+		db.transaction(insert, errorHandler);
 	}
 	
-	dbModel.prototype.getBirthdayMsg(){
-		
+	dbModel.prototype.display_AllMessages = function(type, table){		
+		message_type= type;
+		output_table = table;		
+		var db = window.openDatabase("MessageDB", "1.0", "ddbcom db", 200000);	
+		db.transaction(read_AllMessages, errorHandler);	
+	}
+	
+	dbModel.prototype.display_OneMessage = function(id, type, handler){
+		msgModel.setID(id);
+		message_type = type;
+		callback = handler;
+		var db = window.openDatabase("MessageDB", "1.0", "ddbcom db", 200000);	
+		db.transaction(read_Message, errorHandler);
+	}
+	
+	dbModel.prototype.updateRead = function(id){
+		msgModel.setID(id);
+		var db = window.openDatabase("MessageDB", "1.0", "ddbcom db", 200000);	
+		db.transaction(change_Read, errorHandler);
 	}
 	
 	function createTable(trans){		
-		trans.executeSql('CREATE TABLE IF NOT EXISTS BIRTHDAY (id INTEGER PRIMARY KEY AUTOINCREMENT, data TEXT)');
+		trans.executeSql('CREATE TABLE IF NOT EXISTS MESSAGES (id INTEGER PRIMARY KEY AUTOINCREMENT, subject TEXT, message TEXT, image TEXT, rsvp TEXT, type TEXT, read INTEGER DEFAULT 0)');
 	}
 	
 	function errorHandler(err){
 		alert("Error processing SQL: "+err.message);
 	}
 	
-	
-	function insertMessage(msg){
-		message = msg;
-		//alert(this.message);
-		var db = window.openDatabase("MessageDB", "1.0", "ddbcom db", 200000);	
-		db.transaction(insert, errorHandler, insertSuccess);
-	}	
-	
-	function insert(trans){				
-		var query = 'INSERT INTO BIRTHDAY (data) VALUES ("'+message+'")';
+	function insert(trans){	
+		var subject = msgModel.getSubject();
+		var message = msgModel.getMessage();
+		var image = msgModel.getImage();
+		var rsvp = msgModel.getRSVP();
+		var type = msgModel.getType();		
+		var query = 'INSERT INTO MESSAGES (subject, message, image, rsvp, type) VALUES ("'+subject+'", "'+message+'", "'+image+'","'+rsvp+'", "'+type+'")';
 		trans.executeSql(query);
 	}	
 	
-	function insertSuccess(res){				
-		var db = window.openDatabase("MessageDB", "1.0", "ddbcom db", 200000);	
-		db.transaction(readMsg, errorHandler, displayMsg);
+	function read_AllMessages(trans){	
+		trans.executeSql('SELECT id, subject, read FROM MESSAGES WHERE type="'+message_type+'"',[],display_Message,errorHandler);
 	}
 	
-	function readMsg(trans){	
-		trans.executeSql('SELECT * FROM BIRTHDAY',[],displayMsg,errorHandler);
-	}
-
-	
-	function displayMsg(trans, result){
-		var size = result.rows.length;		
-		var out = "Messages:\n";
-		for(var i=0;i<size;i++){
-			out += result.rows.item(i).data;
-			out+="\n";
-			//alert(result.rows.item(i).data );
-		}
-		alert(out);			
+	function display_Message(trans, result){		
+		var size = result.rows.length;			
+		for(var i=0; i<size;i++){
+			var id = result.rows.item(i).id;
+			var sub = result.rows.item(i).subject;
+			var read = result.rows.item(i).read;			
+			if(read == 0){
+				sub = '<strong>'+sub+'</strong>';
+			}
+			$(output_table+' > tbody:last').append('<tr id="'+id+'"><td>'+sub+'</td></tr>');								 
+		}		
 	}
 	
+	function read_Message(trans){
+		trans.executeSql('SELECT * FROM MESSAGES WHERE id="'+msgModel.getID()+'" AND type="'+message_type+'"',[],callback,errorHandler);
+	}
+	
+	function change_Read(trans){
+		trans.executeSql('UPDATE MESSAGES SET read = 1 WHERE id="'+msgModel.getID()+'"',errorHandler);
+	}
 	
 	window.dbModel = dbModel;
 
 })(window,$);
-
-/*
-dbModel.prototype.insertMessage = function(msg){
-		var model = this;
-		db = window.openDatabase("Testdb", "1.0", "ddbcom db", 200000);
-		db.transaction(populateDB, errorCB, successCB);
-		model.db = db;
-	}
-	
-	dbModel.prototype.check = function(msg){
-		alert("check")
-		var model = this;
-		db = window.openDatabase("Testdb", "1.0", "ddbcom db", 200000);
-		db.transaction(checkResults, errorC, querySuccess);
-		model.db = db;
-	}
-	
-	function populateDB(trans){		
-        trans.executeSql('CREATE TABLE IF NOT EXISTS DEMO (id unique, data)');
-        trans.executeSql('INSERT INTO DEMO (id, data) VALUES (1, "First row")');
-        trans.executeSql('INSERT INTO DEMO (id, data) VALUES (2, "Second row")');
-	}
-	
-	// Transaction error callback
-    //
-    function errorCB(err) {
-        alert("Error processing insert SQL: "+err.message);
-    }
-	
-	function errorC(err) {
-        alert("Error reading: "+err.message);
-    }
-
-    // Transaction success callback
-    //
-    function successCB(trans) {
-        alert("success insert!");		
-    }
-	
-	function checkResults(trans){
-		trans.executeSql('SELECT * FROM DEMO', [], querySuccess, errorCB);		
-	}
-	
-	function querySuccess(trans, results) {
-        alert("Returned rows = " + results.rows.length);
-        // this will be true since it was a select statement and so rowsAffected was 0
-        if (!results.rowsAffected) {
-            alert('No rows affected!');
-            return false;
-        }
-        // for an insert statement, this property will return the ID of the last inserted row
-        alert("Last inserted row ID = " + results.insertId);
-    }
-	
-	window.dbModel = dbModel;
-	
-	*/
