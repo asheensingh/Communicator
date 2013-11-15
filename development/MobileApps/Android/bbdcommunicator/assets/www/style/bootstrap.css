@@ -5161,3 +5161,17 @@ td.visible-print {
 .error {
     color:#ff0039;
 }
+
+.img-fit{
+  display: block;
+  margin: auto;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.myfooter{
+    display: block;
+    position: fixed;    
+    bottom: 0;
+    width: 100%;
+}

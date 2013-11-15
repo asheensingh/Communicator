@@ -84,6 +84,7 @@ public class GCMIntentService extends GCMBaseIntentService {
         json.put("image", extras.getString("image"));
         json.put("rsvp", extras.getString("rsvp_type"));
         json.put("type", extras.getString("notification_type"));
+        json.put("date", extras.getString("date"));
                 
         //I commented this out becuase I don't think we need this
         //json.put("msgcnt", extras.getString("msgcnt"));

@@ -1,5 +1,5 @@
 (function(window,$) {			
-	var messageObject = function messageModel(id, sub, mes, im, rs, ty, re){	
+	var messageObject = function messageModel(id, sub, mes, im, rs, ty, re, date){	
 		this.id = id;
 		this.subject = sub;
 		this.message = mes;
@@ -7,7 +7,11 @@
 		this.rsvp = rs;
 		this.type = ty;
 		this.read = re;
+		this.date = date;
 	}	
+
+	/*getters*/
+
 	messageObject.prototype.getID = function(){		
 		return this.id;
 	}
@@ -35,6 +39,13 @@
 	messageObject.prototype.getRead = function(){		
 		return this.read;
 	}
+
+	messageObject.prototype.getDate = function(){		
+		return this.date;
+	}
+
+
+	/*setters*/
 	
 	messageObject.prototype.setID = function(id){		
 		this.id = id;
@@ -42,8 +53,7 @@
 	
 	messageObject.prototype.setSubject = function(sub){		
 		this.subject = sub;
-	}
-	
+	}	
 	
 	messageObject.prototype.setMessage = function(mes){		
 		this.message = mes;
@@ -63,6 +73,10 @@
 	
 	messageObject.prototype.setRead = function(re){		
 		this.read = re;
+	}
+
+	messageObject.prototype.setDate = function(date){		
+		this.date = date;
 	}
 	
 	window.messageObject = messageObject;
