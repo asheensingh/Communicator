@@ -1,14 +1,24 @@
+document.addEventListener("deviceready", onDeviceReady, false);
+
+function onDeviceReady(){
+    document.addEventListener("backbutton", function(e){
+       if($('#birthday_table').css('display') == 'none'){
+       	$("#birthday_table").show();
+       	$("#message_div").hide();
+       }
+       else{
+       	window.location.replace("home.html");
+       }
+    }, false);
+}
+
+
 $(document).ready(function(){
-	var longpress;
+	var click_start;
 	var selected_tr;
 
 	var db = new dbModel();
 	db.display_AllMessages('birthday',show_all_messages);
-
-	$("#birthday_table").delegate('tr', 'click', function() {        
-		var id = $(this).attr('id');		
-		db.display_OneMessage(id, 'birthday',show_message);
-    });
 
     function show_all_messages(trans,result){
     	var size = result.rows.length;
@@ -20,10 +30,10 @@ $(document).ready(function(){
     	else{    
     		$("#no_messages").hide();				
 			for(var i=0; i<size;i++){
-				var id = result.rows.item(i).id;
-				var sub = result.rows.item(i).subject;
-				var read = result.rows.item(i).read;
-				var date = result.rows.item(i).date;
+				var id = decodeURI(result.rows.item(i).id);
+				var sub = decodeURI(result.rows.item(i).subject);
+				var read = decodeURI(result.rows.item(i).read);
+				var date = decodeURI(result.rows.item(i).date);
 				sub = sub +'<br>'+date;			
 				if(read == 0){
 					sub = '<strong>'+sub+'</strong>';
@@ -34,14 +44,15 @@ $(document).ready(function(){
     }
 	
 	function show_message(trans, result){
-		var id = result.rows.item(0).id;		
+		$("#delete_option").hide();
+		var id = decodeURI(result.rows.item(0).id);		
 		db.updateRead(id);
-		var sub = result.rows.item(0).subject;
-		var mess = result.rows.item(0).message;
-		var image = result.rows.item(0).image;
-		var rsvp = result.rows.item(0).rsvp;
-		var type = result.rows.item(0).type;
-		var read = result.rows.item(0).read;
+		var sub = decodeURI(result.rows.item(0).subject);
+		var mess = decodeURI(result.rows.item(0).message);
+		var image = decodeURI(result.rows.item(0).image);
+		var rsvp = decodeURI(result.rows.item(0).rsvp);
+		var type = decodeURI(result.rows.item(0).type);
+		var read = decodeURI(result.rows.item(0).read);
 		$("#birthday_table").hide();
 		$("#subject").html(sub);		
 		if(mess != 'null'){			
@@ -53,28 +64,49 @@ $(document).ready(function(){
 		$("#message_div").show();		
 	}
 
-$("#birthday_table").delegate('tr','touchstart' ,function(event){ 
-	$('.danger').removeClass('danger');
-	$("#delete_option").hide();
-	selected_tr	 = $(this);
-	var id = selected_tr.attr('id');	
-	longpress=true;	
-
-	setTimeout(function() {
-		if(longpress)	
-		selected_tr.addClass("danger");	
-		$("#delete_option").fadeIn('slow','swing');
-
-		//$("#delete_option").css({position:"absolute", left:e.pageX,top:e.pageY});
-	}, 2000);
+$("#birthday_table").delegate('tr','touchstart' ,function(event){
+	selected_tr	 = $(this);	
+	var d = new Date();
+	click_start = d.getTime();
 });
+
 
 $("#birthday_table").delegate('tr','touchend' ,function(){ 
-longpress=false;
-clearTimeout();
+
+	var d = new Date();
+	var click_stop = d.getTime();
+	var time = click_stop - click_start;
+	if(time >= 1000){
+		longPressHandler();
+	}
+	else{
+		shortPressHandler();
+	}
+
 });
 
+function longPressHandler(){
+	$('.danger').removeClass('danger');
+	$("#delete_option").hide();
+	selected_tr.addClass("danger");	
+	$("#delete_option").fadeIn('slow','swing');
+}
+
+function shortPressHandler(){
+	if ( $('#delete_option').css('display') != 'none'){	
+			$('.danger').removeClass('danger');
+			$("#delete_option").hide();
+	} 
+	else{	
+		var id = selected_tr.attr('id');
+		db.display_OneMessage(id, 'birthday',show_message);
+	}    
+}
+
+
 $("#delete_one").click(function(){
+	$('.danger').removeClass('danger');
+	$("#delete_option").hide();
 	db.deleteOne(selected_tr.attr('id'),delete_handler);
 	db.display_AllMessages('birthday',show_all_messages);
 });
@@ -91,13 +123,15 @@ $("#delete_all").click(function(){
 
 function onConfirm(buttonIndex){		
 	if(buttonIndex == 2){
+		$('.danger').removeClass('danger');
+		$("#delete_option").hide();
 		db.deleteAll('birthday',delete_handler);
 		db.display_AllMessages('birthday',show_all_messages);
 	}
 }
 
 function delete_handler(){
-	$("#notification").show(100000000,"slow","swing");		
+	$("#notification").show(10000000);		
 }
 	
 });

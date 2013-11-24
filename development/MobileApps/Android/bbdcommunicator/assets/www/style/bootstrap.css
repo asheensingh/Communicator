@@ -5169,9 +5169,7 @@ td.visible-print {
   max-height: 100%;
 }
 
-.myfooter{
-    display: block;
-    position: fixed;    
+.myfooter{    
+    position: fixed;
     bottom: 0;
-    width: 100%;
 }

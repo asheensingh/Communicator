@@ -65,35 +65,35 @@
 	}
 	
 	function insert(trans){	
-		var subject = msgModel.getSubject();
-		var message = msgModel.getMessage();
-		var image = msgModel.getImage();
-		var rsvp = msgModel.getRSVP();
-		var type = msgModel.getType();	
-		var date = msgModel.getDate();	
+		var subject = encodeURI(msgModel.getSubject());
+		var message = encodeURI(msgModel.getMessage());
+		var image = (msgModel.getImage());
+		var rsvp = (msgModel.getRSVP());
+		var type = (msgModel.getType());	
+		var date = (msgModel.getDate());	
 		var query = 'INSERT INTO MESSAGES (subject, message, image, rsvp, type, date) VALUES ("'+subject+'", "'+message+'", "'+image+'","'+rsvp+'", "'+type+'", "'+date+'")';
 		trans.executeSql(query);
 	}	
 	
 	function read_AllMessages(trans){	
-		trans.executeSql('SELECT id, subject, read, date FROM MESSAGES WHERE type="'+message_type+'" ORDER BY date DESC',[],callback,errorHandler);
+		trans.executeSql('SELECT id, subject, read, date FROM MESSAGES WHERE type="'+encodeURI(message_type)+'" ORDER BY date DESC',[],callback,errorHandler);
 	}
 	
 	
 	function read_Message(trans){
-		trans.executeSql('SELECT * FROM MESSAGES WHERE id="'+msgModel.getID()+'" AND type="'+message_type+'"',[],callback,errorHandler);
+		trans.executeSql('SELECT * FROM MESSAGES WHERE id="'+encodeURI(msgModel.getID())+'" AND type="'+encodeURI(message_type)+'"',[],callback,errorHandler);
 	}
 	
 	function change_Read(trans){		
-		trans.executeSql('UPDATE MESSAGES SET read = 1 WHERE id="'+msgModel.getID()+'"',[],function(){},errorHandler);
+		trans.executeSql('UPDATE MESSAGES SET read = 1 WHERE id="'+encodeURI(msgModel.getID())+'"',[],function(){},errorHandler);
 	}
 	
 	function delete_all(trans){
-		trans.executeSql('DELETE FROM MESSAGES WHERE type="'+msgModel.getType()+'"',[],callback,errorHandler);
+		trans.executeSql('DELETE FROM MESSAGES WHERE type="'+encodeURI(msgModel.getType())+'"',[],callback,errorHandler);
 	}
 
 	function delete_one(trans){
-		trans.executeSql('DELETE FROM MESSAGES WHERE id="'+msgModel.getID()+'"',[],callback,errorHandler);
+		trans.executeSql('DELETE FROM MESSAGES WHERE id="'+encodeURI(msgModel.getID())+'"',[],callback,errorHandler);
 	}
 
 	window.dbModel = dbModel;

@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.plugin.GCM.GCMPlugin;
 import android.app.Notification;
@@ -84,8 +83,8 @@ public class GCMIntentService extends GCMBaseIntentService {
         json.put("image", extras.getString("image"));
         json.put("rsvp", extras.getString("rsvp_type"));
         json.put("type", extras.getString("notification_type"));
-        json.put("date", extras.getString("date"));
-                
+        json.put("date", extras.getString("date"));        
+        
         //I commented this out becuase I don't think we need this
         //json.put("msgcnt", extras.getString("msgcnt"));
         
@@ -95,19 +94,25 @@ public class GCMIntentService extends GCMBaseIntentService {
         
         notif.flags = Notification.FLAG_AUTO_CANCEL;
         notif.defaults |= Notification.DEFAULT_SOUND;
-        notif.defaults |= Notification.DEFAULT_VIBRATE;
-         
-        Intent notificationIntent = new Intent(context, GCMIntentService.class);
+        notif.defaults |= Notification.DEFAULT_VIBRATE; 
+        
+            
+        Intent notificationIntent = new Intent(context, MainActivity.class);
+        notificationIntent.putExtra ("url","file:///android_asset/www/index.html");
         notificationIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);       
         notif.setLatestEventInfo(context, subject, message, contentIntent);
         String ns = Context.NOTIFICATION_SERVICE;
         NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(ns);
-        mNotificationManager.notify(1, notif);                
+        mNotificationManager.notify(1, notif);            
         
-        Log.v(ME + ":onMessage ", json.toString());        
-        GCMPlugin.sendJavascript( json );
-        // Send the MESSAGE to the Javascript application        
+        while (GCMPlugin.gwebView == null || !GCMPlugin.gwebView.isEnabled()) {
+            // Wait until webView is enabled
+        }
+        GCMPlugin.sendJavascript(json);
+        
+        Log.v(ME + ":onMessage ", json.toString());                
+        // Send the MESSAGE to the Javascript application 
       }
       catch( JSONException e)
       {

@@ -96,10 +96,8 @@ public class GCMPlugin extends CordovaPlugin {
 
   public static void sendJavascript( JSONObject _json )
   {	  
-	//String s = "{'message':'hello','event':'message'}";
     String _d =  "javascript:"+gECB+"(" +_json + ")";
         Log.v(ME + ":sendJavascript", _d);
-        //gwebView.sendJavascript( _d );
        if (gECB != null ) {
           gwebView.sendJavascript( _d );
         }
