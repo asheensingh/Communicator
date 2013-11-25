@@ -16,10 +16,10 @@
 	
 		function checkURL(event){		
 		var url = event.url;
-		var target = "http://localhost/bbdcom/index.php"
-		
+		var target = "http://bbdcom.herokuapp.com/"
+
 		//check if yammer returns an error
-		if(url.indexOf(target+"?error") >-1) {			
+		if(url.indexOf(target+"?error") >-1) {				
 			browserClose(event);
 			window.location.replace("index.html");
 			alert("An error occurred please try again");			
