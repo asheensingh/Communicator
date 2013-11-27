@@ -6,7 +6,7 @@
 	
 	loginModel.prototype.startLogin = function(){		
 		var loginObj = this;
-		browser = window.open('https://www.yammer.com/dialog/oauth?client_id=nEjhbfN94g3w2nAYczxEw&redirect_uri=', '_blank', 'location=no');		
+		browser = window.open('https://www.yammer.com/dialog/oauth?client_id=nEjhbfN94g3w2nAYczxEw&redirect_uri=http://localhost/bbdcom/index.php', '_blank', 'location=no');		
 		browser.addEventListener('loadstart', checkURL);
 		browser.addEventListener('loadstop', checkURL);
 		browser.addEventListener('loaderror', checkURL);
@@ -16,7 +16,7 @@
 	
 		function checkURL(event){		
 		var url = event.url;
-		var target = "http://bbdcom.herokuapp.com/"
+		var target = "http://localhost/bbdcom/index.php"
 
 		//check if yammer returns an error
 		if(url.indexOf(target+"?error") >-1) {				
@@ -34,8 +34,15 @@
 			getUserInfo(code, event);												
 		}
 		
+		else if(event.url.indexOf(target+"#access_token") >-1)
+		{							
+			browserClose(event);								
+			window.location.replace("home.html");											
+		}
+
 		else if($.trim(event.type) == "loaderror")
-		{			
+		{						
+			alert(url)
 			browserClose(event);
 			window.location.replace("index.html");
 			alert("An error occurred. Please try again. \n"+event.message);
